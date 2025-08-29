@@ -1,35 +1,25 @@
-// api/bfhl.js (Vercel Serverless Function)
-const { processData } = require("../src/logic");
+import { processData } from "../src/logic.js"; // make sure logic.js uses ES modules
 
-// ======= CONFIGURE YOUR DETAILS HERE =======
-const FULL_NAME = process.env.FULL_NAME || "pujitha mule"; // lowercase
-const DOB_DDMMYYYY = process.env.DOB_DDMMYYYY || "17091999"; // ddmmyyyy
-const EMAIL = process.env.EMAIL || "your_email@example.com";
-const ROLL_NUMBER = process.env.ROLL_NUMBER || "YOURROLL123";
-// ==========================================
+const FULL_NAME = "pujitha_mule";
+const DOB_DDMMYYYY = "17091999";
+const EMAIL = "pujitha@example.com";
+const ROLL_NUMBER = "ABCD123";
 
-module.exports = async (req, res) => {
+export default function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ is_success: false, message: "Method Not Allowed" });
   }
 
   try {
-    const payload = typeof req.body === "object" && req.body ? req.body : {};
+    const payload = req.body ?? {};
     const data = payload.data ?? [];
 
-    const {
-      even_numbers,
-      odd_numbers,
-      alphabets,
-      special_characters,
-      sum,
-      concat_string
-    } = processData(data);
+    const { even_numbers, odd_numbers, alphabets, special_characters, sum, concat_string } = processData(data);
 
     const user_id = `${FULL_NAME.replace(/\s+/g, "_")}_${DOB_DDMMYYYY}`;
 
-    const response = {
+    return res.status(200).json({
       is_success: true,
       user_id,
       email: EMAIL,
@@ -40,10 +30,8 @@ module.exports = async (req, res) => {
       special_characters,
       sum,
       concat_string
-    };
-
-    return res.status(200).json(response);
+    });
   } catch (err) {
     return res.status(400).json({ is_success: false, message: err.message });
   }
-};
+}
