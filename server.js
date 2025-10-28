@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 // ======= CONFIGURE YOUR DETAILS HERE =======
 // Use lowercase full name for user_id and format ddmmyyyy for date part.
 const FULL_NAME = process.env.FULL_NAME || "pujitha mule"; // lowercase
